@@ -1,11 +1,81 @@
-Document ID: 2017030701442004 
-Document Type: POWER OF ATTORNEY
+Document ID: 2017030101257002', 
+Document type: Deed
+Amount: $215,000.00
+Party 1: WELLS, SABRINA
+Party 2:TRUMP PRESIDENTIAL INC.
 
+Documend ID:'2017032300610001', 
+Document type: LIEN OF COMMON CHARGES
+Amount: $0
+Party 1: MORAN, TREVOR
+Party 2: BOARD OF MANAGERS OF THE HERITAGE AT TRUMP PLACE C
+trevor is debtor 
 
-Party 1:
-YANG, YABO
+Document ID: '2017032300563003',
+Document type: POWER OF ATTORNEY
+Amount: $0
+Party 1: MORAN, MEMDUH METE
+MORAN, ENDER OZBARUT
+Party 2:THE CONDOMINIUM BOARD OF TRUMP PALACE CONDOMINIUM
+
+Documend ID: '2017030101257003', 
+Document type: MORTGAGE 
+Amount: $250,000.00
+Party 1: TRUMP PRESIDENTIAL INC.
+Party 2: WASHINGTON EQUITY AND FUNDING CORP
+-short-term business credit agencies
+
+Document ID: '2017032000372002',
+Document type: Power of attorney
+Amount: $0
+Party 1: DRAIN, JOHN J --CFO of Hearst
+DRAIN, DENA
+Party 2: BOARD OF MANAGERS 200 RIVERSIDE BOULEVARD AT TRUMP
+
+Document ID:'2017020701218003',
+Document type: Power of attorney
+Party 1: DOV AND PAMELA SOLOMON REVOCABLE TRUST
+DOV SOLOMON, TRUSTEE
+Party 2: THE TRUMP WOLD TOWER CONDOMINIUM
+
+Documend ID:'2017032000427004', 
+Document type: Power of attorney
+Party 1: GULATI, MANISH
+General Director, Treasurer's Office at General Motors
+Party 2: 220 RIVERSIDE BOULEVARD AT TRUMP PLACE - BD OF MGR
+
+Document ID: '2017030700200003', 
+Document type: Power of attorney
+Party 1: MLKG, LLC
+-mlkg incorporated 10/20/2016--possible shell company?
+Party 2: CONDOMINIUM BOARD OF TRUMP PARC EAST CONDOMINIUM
+
+Document ID:'2017030701442004',
+Document type: Power of attorney
+Party 1:YANG, YABO
 Country: CHINA
+Party 2:TRUMP PARC CONDOMINIUM
 
-Party 2: 
-TRUMP PARC CONDOMINIUM
+
+Document ID:'2017030500015003',
+Document type: Power of attorney
+Party 1: SLOTNICK, SHARON BETH
+Party 2: BOARD OF MANAGERS 120 RIVERSIDE BLVD TRUMP PLACE
+
+
+Document ID:'2017031000567004',
+Document type: Power of attorney
+Party 1: SCHOEMAN, MICHAEL
+SCHOEMAN, DIANE
+complex litigation attorney
+Party 2: BOARD OF MANAGERS TRUMP PALACE CONDOMINIUM
+
+
+Document ID:'2017030201196003'
+Document type: Power of attorney
+Party 1: LIU, RALPH JIN FUNG
+inventor
+party 2: CONDOMINIUM BOARD OF THE TRUMP PARC EAST
+
+
 
