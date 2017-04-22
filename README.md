@@ -10,7 +10,7 @@ New York City maintains an open data repository related to city governance at th
 
 ### ACRIS Real Estate Data
 We started with downloading different ACRIS data tables directly to our AWS VMs. Warning: running the bash commands below will start a process of downloading approximately 7 GB+ of data!
-`
+```
 wget -O subterranean-rights.csv https://data.cityofnewyork.us/api/views/56kn-pnny/rows.csv?accessType=DOWNLOAD
 wget -O real-property-legals.csv https://data.cityofnewyork.us/api/views/8h5j-fqxa/rows.csv?accessType=DOWNLOAD
 wget -O real-property-masters.csv https://data.cityofnewyork.us/api/views/bnx9-e6tj/rows.csv?accessType=DOWNLOAD
@@ -23,7 +23,7 @@ wget -O property-types-codes.csv https://data.cityofnewyork.us/api/views/94g4-w6
 wget -O personal_property_legals.csv https://data.cityofnewyork.us/api/views/uqqa-hym2/rows.csv?accessType=DOWNLOAD
 wget -O personal_property_parties.csv https://data.cityofnewyork.us/api/views/nbbg-wtuz/rows.csv?accessType=DOWNLOAD
 wget -O personal_property_master.csv https://data.cityofnewyork.us/api/views/sv7x-dduq/rows.csv?accessType=DOWNLOAD
-`
+```
 
 
 ## Conclusion
