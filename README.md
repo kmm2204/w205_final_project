@@ -25,6 +25,39 @@ wget -O personal_property_parties.csv https://data.cityofnewyork.us/api/views/nb
 wget -O personal_property_master.csv https://data.cityofnewyork.us/api/views/sv7x-dduq/rows.csv?accessType=DOWNLOAD
 ```
 
+### Hadoop First
+With the data downloaded on the VM, we opened up the metastore and began creating the appropriate HDFS directories to hold our files. This allowed us to use a variety of ways to query our data through pyspark, sparkSQL, and Hive.
+```
+# Create hdfs directory
+hdfs dfs -mkdir /user/w205/final/data/subterranean_rights
+hdfs dfs -mkdir /user/w205/final/data/real_property_legals
+hdfs dfs -mkdir /user/w205/final/data/real_property_masters
+hdfs dfs -mkdir /user/w205/final/data/real_property_parties
+hdfs dfs -mkdir /user/w205/final/data/real_property_references
+hdfs dfs -mkdir /user/w205/final/data/real_property_remarks
+hdfs dfs -mkdir /user/w205/final/data/state_codes
+hdfs dfs -mkdir /user/w205/final/data/document_control_codes
+hdfs dfs -mkdir /user/w205/final/data/property_types_codes
+hdfs dfs -mkdir /user/w205/final/data/personal_property_legals
+hdfs dfs -mkdir /user/w205/final/data/personal_property_parties
+hdfs dfs -mkdir /user/w205/final/data/personal_property_master
+
+## Load data into hdfs
+hdfs dfs -put /user/w205/final/data/subterranean_rights subterranean-rights.csv
+hdfs dfs -put /user/w205/final/data/real_property_legals real-property-legals.csv
+hdfs dfs -put /user/w205/final/data/real_property_masters real-property-masters.csv
+hdfs dfs -put /user/w205/final/data/real_property_parties real-property-parties.csv
+hdfs dfs -put /user/w205/final/data/real_property_references real-property-references.csv
+hdfs dfs -put /user/w205/final/data/real_property_remarks real-property-remarks.csv
+hdfs dfs -put /user/w205/final/data/state_codes state_codes.csv
+hdfs dfs -put /user/w205/final/data/document_control_codes document_control_codes.csv
+hdfs dfs -put /user/w205/final/data/property_types_codes property_types_codes.csv
+hdfs dfs -put /user/w205/final/data/personal_property_legals personal_property_legals.csv
+hdfs dfs -put /user/w205/final/data/personal_property_parties personal_property_parties.csv
+hdfs dfs -put /user/w205/final/data/personal_property_master personal_property_master.csv
+```
+
+### PostgreSQL for Speed
 
 ## Conclusion
 
