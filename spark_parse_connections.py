@@ -2,7 +2,7 @@ from pyspark import SparkContext
 
 sc = SparkContext()
 
-prop = sc.textFile("file:///data/acris-download/data/real_property_parties.csv")
+prop = sc.textFile("file:///data/real-property-parties.csv")
 
 no_head_prop = prop.zipWithIndex().filter(lambda (row,index): index > 0).keys()
 

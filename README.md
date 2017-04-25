@@ -25,6 +25,15 @@ wget -O personal_property_parties.csv https://data.cityofnewyork.us/api/views/nb
 wget -O personal_property_master.csv https://data.cityofnewyork.us/api/views/sv7x-dduq/rows.csv?accessType=DOWNLOAD
 ```
 
+### Clean up files
+We stripped the commas out of the original files as this caused problems later on
+
+
+###  Clean files are hosted here
+wget -O real-property-parties.csv	https://s3.amazonaws.com/w205final123/RPM_clean.csv
+wget -O real-property-master.csv 	https://s3.amazonaws.com/w205final123/RPP_clean.csv
+
+
 ### Hadoop First
 With the data downloaded on the VM, we opened up the metastore and began creating the appropriate HDFS directories to hold our files. This allowed us to use a variety of ways to query our data through pyspark, sparkSQL, and Hive.
 ```
