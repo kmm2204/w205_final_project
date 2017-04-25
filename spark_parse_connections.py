@@ -13,8 +13,8 @@ def trump_filter(x):
 		for name in not_trump:
 			if name in x:
 				return False
-			else:
-				return True
+		else:
+			return True
 	else:
 		return False
 

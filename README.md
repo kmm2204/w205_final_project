@@ -10,6 +10,11 @@
 
 New York City maintains an open data repository related to city governance at the website https://opendata.cityofnewyork.us/. One of the data sources stored here is from the city's Automated City Register Information System (ACRIS) database, which stores a large amount of property transactions from four of the city's boroughs (Manhattan, Queens, Bronx, and Brooklyn) for the period 1966 to the present. Recently the businessman and real estate mogul Donald Trump was elected President of the United States. Conflicts of interest issues were raised concerning his vast business apparatus and real estate holdings and how the the far-reaching power of his office might be abused for self-gain. To begin mitigating some of these concerns, Trump announced the creation of a revocable trust which would hold and control his real estate properties while in office. (It should be noted that because his family and close colleagues are the trustees, the COI mitigation qualities of this trust are up for debate.) Using different data sources within ACRIS, we began to examine whether this Trump promise is being kept and what COI issues may or may not be addressed through this trust.
 
+# Setup
+For the sake of query speed, we recommend that anyone running our code use a higher end EC2 instance. We've been usuing M3.2xlarge size, and had queries run in < 5 min.
+
+Also this lab assumes you have an EBS volume configured as in Lab 2 of this course, mounted to the `/data` directory.
+
 ## Analysis & Results
 
 ACRIS Real Estate Data
@@ -40,14 +45,17 @@ Then we uploaded the files to s3
 Connect to your ec2 instance.
 Navigate to your /data directory and run the following commands
 ```
-wget -O real-property-parties.csv https://s3.amazonaws.com/w205final123/RPM_clean.csv 
+wget -O real-property-master.csv https://s3.amazonaws.com/w205final123/RPM_clean.csv 
 
-wget -O real-property-master.csv https://s3.amazonaws.com/w205final123/RPP_clean.csv
+wget -O real-property-parties.csv https://s3.amazonaws.com/w205final123/RPP_clean.csv
 ```
 
 ### Download scripts from repo
 ```
-wget -O https://github.com/kmm2204/w205_final_project.git
+cd /data
+wget https://github.com/kmm2204/w205_final_project/archive/master.zip
+unzip master.zip
+rm master.zip
 ```
 ### Run Pyspark Scripts
 
@@ -61,12 +69,14 @@ spark_parse.py - takes all of the transactions that Trump is associated with, an
 
 spark_parse_connections.py - takes the transaction IDs that Trump is assiciated with, and finds the other parties associated with those IDs.
 
-pyspark data/spark_parse.py
+```
+spark15/bin/pyspark w205_final_project-master/spark_parse.py
 
-pyspark data/spark_parse_connections.py
+spark15/bin/pyspark w205_final_project-master/spark_parse_connections.py
+```
 
 ### Run Cleanup Script
 This script takes those many parts from the previous step, and combines them into single csv files.
 ```
-cleanup.sh
+w205_final_project-master/cleanup.sh
 ```
