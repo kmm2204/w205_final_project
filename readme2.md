@@ -49,6 +49,9 @@ wget -O real-property-master.csv https://s3.amazonaws.com/w205final123/RPP_clean
 wget -O https://github.com/kmm2204/w205_final_project.git
 
 ### Run Pyspark Scripts
+
+Download scripts into /data directory
+
 These scripts take the ACRIS data, and isolate the Trump transactions and Trumps connections. It should be noted that it dumps these merged datasets into directories in many parts.
 
 The two main files analyzed are real_property_parties.csv and real_property_master.csv, which  contains information about the people involved with each transaction and the transaction metadata respectively.
@@ -57,9 +60,9 @@ spark_parse.py - takes all of the transactions that Trump is associated with, an
 
 spark_parse_connections.py - takes the transaction IDs that Trump is assiciated with, and finds the other parties associated with those IDs.
 
-pyspark w205_final_project/spark_parse.py
+pyspark data/spark_parse.py
 
-pyspark w205_final_project/spark_parse_connections.py
+pyspark data/spark_parse_connections.py
 
 ### Run Cleanup Script
 This script takes those many parts from the previous step, and combines them into single csv files.
