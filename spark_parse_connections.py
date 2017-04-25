@@ -13,8 +13,8 @@ def trump_filter(x):
 		for name in not_trump:
 			if name in x:
 				return False
-			else:
-				return True
+		else:
+			return True
 	else:
 		return False
 
@@ -22,7 +22,7 @@ prop_trump = no_head_prop.filter(trump_filter)
 
 def splitter(x):
 	tmp = x.split(",")
-	return (tmp[0],tmp[1:])
+	return (tmp[1],tmp[2:])
 
 prop_trump_tuples = prop_trump.map(splitter)
 
