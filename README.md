@@ -1,8 +1,8 @@
 # Trust in Trump
 
-# w205 Final Project
+### w205 Final Project
 
-## 4/25/17
+### 4/25/17
 
 ## Krista Mar, Riley Rustad, Alex Lau
 
@@ -37,20 +37,21 @@ Then we uploaded the files to s3
 
 ### Uploaded the cleaned files to s3
 
-connect to your ec2 instance
-navigate into your /data directory and run the following commands
-
+Connect to your ec2 instance.
+Navigate to your /data directory and run the following commands
+```
 wget -O real-property-parties.csv https://s3.amazonaws.com/w205final123/RPM_clean.csv 
 
 wget -O real-property-master.csv https://s3.amazonaws.com/w205final123/RPP_clean.csv
+```
 
 ### Download scripts from repo
-
+```
 wget -O https://github.com/kmm2204/w205_final_project.git
-
+```
 ### Run Pyspark Scripts
 
-Download scripts into /data directory
+Download scripts into /data directory.
 
 These scripts take the ACRIS data, and isolate the Trump transactions and Trumps connections. It should be noted that it dumps these merged datasets into directories in many parts.
 
@@ -66,9 +67,6 @@ pyspark data/spark_parse_connections.py
 
 ### Run Cleanup Script
 This script takes those many parts from the previous step, and combines them into single csv files.
-
+```
 cleanup.sh
-
-### Analysis 
-
-
+```
