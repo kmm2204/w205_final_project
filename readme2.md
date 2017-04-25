@@ -41,6 +41,7 @@ connect to your ec2 instance
 navigate into your /data directory and run the following commands
 
 wget -O real-property-parties.csv https://s3.amazonaws.com/w205final123/RPM_clean.csv 
+
 wget -O real-property-master.csv https://s3.amazonaws.com/w205final123/RPP_clean.csv
 
 ### Download scripts from repo
@@ -57,6 +58,7 @@ spark_parse.py - takes all of the transactions that Trump is associated with, an
 spark_parse_connections.py - takes the transaction IDs that Trump is assiciated with, and finds the other parties associated with those IDs.
 
 pyspark w205_final_project/spark_parse.py
+
 pyspark w205_final_project/spark_parse_connections.py
 
 ### Run Cleanup Script
