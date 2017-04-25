@@ -22,7 +22,10 @@ ACRIS Real Estate Data
 ### Preprocessing
 
 ### We downloaded some files to our desktop
+We assume that the user will be operating out of the /data directory
 ```
+cd /data
+
 real-property-masters.csv 
 https://data.cityofnewyork.us/api/views/bnx9-e6tj/rows.csv?accessType=DOWNLOAD
 
