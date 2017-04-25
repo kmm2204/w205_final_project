@@ -2,7 +2,7 @@ from pyspark import SparkContext
 
 sc = SparkContext()
 
-prop = sc.textFile("file:///data/acris-download/data/real_property_parties.csv")
+prop = sc.textFile("file:///data/real-property-parties.csv")
 
 no_head_prop = prop.zipWithIndex().filter(lambda (row,index): index > 0).keys()
 
@@ -26,7 +26,7 @@ def splitter(x):
 
 prop_trump_tuples = prop_trump.map(splitter)
 
-master = sc.textFile("file:///data/acris-download/data/real_property_master.csv")
+master = sc.textFile("file:///data/real-property-master.csv")
 
 no_head_master = master.zipWithIndex().filter(lambda (row,index): index > 0).keys()
 
