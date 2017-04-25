@@ -22,10 +22,7 @@ ACRIS Real Estate Data
 ### Preprocessing
 
 ### We downloaded some files to our desktop
-We assume that the user will be operating out of the /data directory
 ```
-cd /data
-
 real-property-masters.csv 
 https://data.cityofnewyork.us/api/views/bnx9-e6tj/rows.csv?accessType=DOWNLOAD
 
@@ -48,6 +45,8 @@ Then we uploaded the files to s3
 Connect to your ec2 instance.
 Navigate to your /data directory and run the following commands
 ```
+cd /data
+
 wget -O real-property-master.csv https://s3.amazonaws.com/w205final123/RPM_clean.csv 
 
 wget -O real-property-parties.csv https://s3.amazonaws.com/w205final123/RPP_clean.csv
