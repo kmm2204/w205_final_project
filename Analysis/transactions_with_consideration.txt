@@ -1,0 +1,182 @@
+/* PostgreSQL. Assumes database name == 'acris' and other acris .csvs have been loaded as tables */
+
+We began with some exploratory analysis on the smaller real_property_master (RPM) dataset. This dataset lists each transaction, identified by a document ID number, and provides information such as the type of document it was (a deed or a lease, for example), and any dollar amount and the date of the transaction. What the RPM dataset does not provide are the parties to the transaction. These are kept separately in the real_property_parties (RPP) dataset and can by joined on RPM through the document ID, although this process can take a while on a single machine.
+
+Due to the number of records in RPM (nearly 14M), we created a new table pymts_master that stored only transactions where the dollar amount was not zero.
+```
+CREATE TABLE pymts_master AS SELECT * FROM real_property_master WHERE docamount != '0';
+COPY pymts_master TO '/data/acris-download/data/pymts_master.csv' DELIMITER ',' CSV HEADER; -- Load the pymts_master.csv created previously into new table
+```
+
+Incidentally, this new dataset holds only about a third of the records of RPM. A cursory look the items showing no dollar amount change seems to point to ownership transfers and similar where no consideration is given between the parties. Now we can look at the distribution of transactions involving money:
+```
+acris=# SELECT doctypedescription, COUNT(*) FROM pymts_master JOIN document_control_codes ON pymts_master.doctype = document_control_codes.doctype GROUP BY doctypedescription ORDER BY COUNT(*) DESC;
+
+       doctypedescription       |  count
+--------------------------------+---------
+ MORTGAGE                       | 3081536
+ DEED                           |  602528
+ AGREEMENT                      |  377039
+ BOTH RPTT AND RETT             |  209974
+ ASSIGNMENT OF LEASES AND RENTS |  101948
+ NYC REAL PROPERTY TRANSFER TAX |   93245
+ MORTGAGE AND CONSOLIDATION     |   51290
+ TIMESHARE DEED                 |   35509
+ DEED, OTHER                    |   18716
+ CORRECTION MORTGAGE            |    6346
+ ADDITIONAL MORTGAGE TAX        |    2507
+ MORTGAGE SPREADER AGREEMENT    |    1794
+ ASSUMPTION OF MORTGAGE         |    1571
+ LIFE ESTATE DEED               |    1036
+ APPRT BREAKDWN OFFICE USE ONLY |     821
+ EASEMENT                       |     811
+ ASSIGNMENT OF LEASE            |     737
+ ASSIGNMENT, MORTGAGE           |     717
+ SUNDRY MISCELLANEOUS           |     693
+ COLLATERAL MORTGAGE            |     629
+ MEMORANDUM OF LEASE            |     596
+ UNIT ASSIGNMENT                |     580
+ CORRECTION DEED                |     452
+ NYS REAL ESTATE TRANSFER TAX   |     443
+ DEVELOPMENT RIGHTS             |     395
+ CORRECTION DOC-OFFICE USE ONLY |     360
+ SATISFACTION OF MORTGAGE       |     320
+ SUNDRY MORTGAGE                |     316
+ TERMINATION OF LEASE OR MEMO   |     285
+ ASSIGN/TERM OF CONTRACT/BID    |     269
+ CONTRACT OF SALE               |     220
+ LEASE                          |     203
+ DECLARATION OF MODIFI OF MRT   |     184
+ CERTIFICATE OF REDUCTION       |     177
+ DEED WITH RESTRICTIVE COVENANT |      88
+ MEMORANDUM OF CONTRACT         |      69
+ TERMINATION OF AGREEMENT       |      27
+ POWER OF ATTORNEY              |      22
+ AIR RIGHTS                     |      18
+ LETTERS  PATENT                |      17
+ RELEASE                        |      17
+ MISCELLANEOUS                  |      15
+ CONFIRMATORY DEED              |      11
+ SUBORDINATION OF MORTGAGE      |       8
+ NOTICE OF APPROPRIATION        |       8
+ LICENSE                        |       7
+ SUNDRY AGREEMENT               |       6
+ MERGER                         |       6
+ BOND                           |       5
+ ASGN OF ASGN OF L&R            |       5
+ TERMINATION OF ASSIGN OF L&R   |       4
+ CERTIFICATE                    |       3
+ WITHHELD SATISFACTION          |       3
+ ESTOPPAL REMOVAL OFFICE USE ON |       3
+ ESTOPPEL FOR OFFICE USE ONLY   |       2
+ SUBORDINATION OF LEASE         |       2
+ PARTIAL SATISFACTION           |       1
+ JUDGMENT                       |       1
+(58 rows)
+```
+
+We see that by pure count, mortgages are by far the most common transaction where consideration is given, not a surprising outcome. It is useful to know if we want to further subset our data and want to know how much data we might be ignoring by doing that.
+
+In our original pymts_master table, the payment column was a string type. We can correct that now:
+```
+ALTER TABLE pymts_master ALTER COLUMN docamount TYPE FLOAT USING (docamount::float);
+```
+
+Now we can run some math functions on the document amount field:
+```
+SELECT doctypedescription, COUNT(*), AVG(docamount), SUM(docamount) FROM pymts_master JOIN document_control_codes ON pymts_master.doctype = document_control_codes.doctype GROUP BY doctypedescription ORDER BY COUNT(*) DESC;
+
+       doctypedescription       |  count  |       avg        |       sum
+--------------------------------+---------+------------------+------------------
+ MORTGAGE                       | 3081536 | 526426.755175916 | 1622202997437.77
+ DEED                           |  602528 | 1438329.81199558 | 866633984962.075
+ AGREEMENT                      |  377039 |  2895239.8337725 | 1091618331685.75
+ BOTH RPTT AND RETT             |  209974 | 1046150.05747435 |  219664312168.12
+ ASSIGNMENT OF LEASES AND RENTS |  101948 | 6656942.07000117 | 678661930152.479
+ NYC REAL PROPERTY TRANSFER TAX |   93245 | 1247465.21296263 | 116319893782.701
+ MORTGAGE AND CONSOLIDATION     |   51290 | 1956577.99953226 |  100352885596.01
+ TIMESHARE DEED                 |   35509 | 48702.3678385766 | 1729372379.58001
+ DEED, OTHER                    |   18716 | 1608905.96205493 |   30112283985.82
+ CORRECTION MORTGAGE            |    6346 | 1425730.42543334 |     9047685279.8
+ ADDITIONAL MORTGAGE TAX        |    2507 | 946072.841188671 |    2371804612.86
+ MORTGAGE SPREADER AGREEMENT    |    1794 | 15025850.1403512 |   26956375151.79
+ ASSUMPTION OF MORTGAGE         |    1571 | 10113423.8536728 |   15888188874.12
+ LIFE ESTATE DEED               |    1036 | 150496.821138996 |      155914706.7
+ APPRT BREAKDWN OFFICE USE ONLY |     821 | 812417.529232643 |      666994791.5
+ EASEMENT                       |     811 | 872332.731664612 |     707461845.38
+ ASSIGNMENT OF LEASE            |     737 | 32782384.0841927 |   24160617070.05
+ ASSIGNMENT, MORTGAGE           |     717 | 317488.247545328 |     227639073.49
+ SUNDRY MISCELLANEOUS           |     693 | 4879149.64284271 |    3381250702.49
+ COLLATERAL MORTGAGE            |     629 | 8454836.31068363 |    5318092039.42
+ MEMORANDUM OF LEASE            |     596 | 20178529.4388423 |   12026403545.55
+ UNIT ASSIGNMENT                |     580 | 566473.879948276 |     328554850.37
+ CORRECTION DEED                |     452 | 170935.189756637 |      77262705.77
+ NYS REAL ESTATE TRANSFER TAX   |     443 | 1457085.84467269 |     645489029.19
+ DEVELOPMENT RIGHTS             |     395 | 3729722.34967089 |    1473240328.12
+ CORRECTION DOC-OFFICE USE ONLY |     360 | 3242766.45166667 |     1167395922.6
+ SATISFACTION OF MORTGAGE       |     320 |   68037.88909375 |      21772124.51
+ SUNDRY MORTGAGE                |     316 | 5701465.47746835 |    1801663090.88
+ TERMINATION OF LEASE OR MEMO   |     285 | 1731963.11940351 |     493609489.03
+ ASSIGN/TERM OF CONTRACT/BID    |     269 | 287502.017992565 |      77338042.84
+ CONTRACT OF SALE               |     220 | 1049732.60454545 |        230941173
+ LEASE                          |     203 | 18589397.7469458 |    3773647742.63
+ DECLARATION OF MODIFI OF MRT   |     184 | 534881.517880435 |      98418199.29
+ CERTIFICATE OF REDUCTION       |     177 | 6370238.18355932 |    1127532158.49
+ DEED WITH RESTRICTIVE COVENANT |      88 | 359266.136363636 |         31615420
+ MEMORANDUM OF CONTRACT         |      69 | 642977.782898551 |      44365467.02
+ TERMINATION OF AGREEMENT       |      27 | 461813.555555556 |         12468966
+ POWER OF ATTORNEY              |      22 | 199610.034545455 |       4391420.76
+ AIR RIGHTS                     |      18 | 1118778.33333333 |         20138010
+ RELEASE                        |      17 | 915501.577647059 |      15563526.82
+ LETTERS  PATENT                |      17 | 1770198.76470588 |         30093379
+ MISCELLANEOUS                  |      15 | 445451.479333333 |       6681772.19
+ CONFIRMATORY DEED              |      11 | 261320.386363636 |       2874524.25
+ NOTICE OF APPROPRIATION        |       8 |           887750 |          7102000
+ SUBORDINATION OF MORTGAGE      |       8 |      660117.4675 |       5280939.74
+ LICENSE                        |       7 |          56050.5 |         392353.5
+ SUNDRY AGREEMENT               |       6 | 378239.771666667 |       2269438.63
+ MERGER                         |       6 | 4773625.33333333 |         28641752
+ BOND                           |       5 |           139800 |           699000
+ ASGN OF ASGN OF L&R            |       5 |         661800.6 |          3309003
+ TERMINATION OF ASSIGN OF L&R   |       4 |          68758.5 |           275034
+ CERTIFICATE                    |       3 | 11910.3333333333 |            35731
+ WITHHELD SATISFACTION          |       3 |            57000 |           171000
+ ESTOPPAL REMOVAL OFFICE USE ON |       3 |           834000 |          2502000
+ ESTOPPEL FOR OFFICE USE ONLY   |       2 |           995700 |          1991400
+ SUBORDINATION OF LEASE         |       2 |          1900000 |          3800000
+ PARTIAL SATISFACTION           |       1 |            35000 |            35000
+ JUDGMENT                       |       1 |            130.5 |            130.5
+(58 rows)
+```
+The query above orders by document type count like the first query, but we can already see that the average amount of a mortgage is relatively low compared to other types of transactions. We also note that there are some transactions with very high average amounts, but very low numbers of occurances. We can further subset our data by looking at types with counts greater than 25,000. Focusing only on these more common transactions, we still end up with over 99% of the total population from pymts_master (4,553,069 transactions greater than 25K / 4,594,595 total pymts_master count).
+
+```
+SELECT doctypedescription, COUNT(*) AS count, AVG(docamount), SUM(docamount) FROM pymts_master JOIN document_control_codes ON pymts_master.doctype = document_control_codes.doctype GROUP BY doctypedescription HAVING (COUNT(*) > 25000) ORDER BY AVG(docamount) DESC;
+
+       doctypedescription       |  count  |       avg        |       sum
+--------------------------------+---------+------------------+------------------
+ ASSIGNMENT OF LEASES AND RENTS |  101948 | 6656942.07000117 | 678661930152.479
+ AGREEMENT                      |  377039 |  2895239.8337725 | 1091618331685.75
+ MORTGAGE AND CONSOLIDATION     |   51290 | 1956577.99953226 |  100352885596.01
+ DEED                           |  602528 | 1438329.81199558 | 866633984962.075
+ NYC REAL PROPERTY TRANSFER TAX |   93245 | 1247465.21296263 | 116319893782.701
+ BOTH RPTT AND RETT             |  209974 | 1046150.05747435 |  219664312168.12
+ MORTGAGE                       | 3081536 | 526426.755175916 | 1622202997437.77
+ TIMESHARE DEED                 |   35509 | 48702.3678385766 | 1729372379.58001
+(8 rows)
+
+SELECT doctypedescription, COUNT(*) AS count, AVG(docamount), SUM(docamount) FROM pymts_master JOIN document_control_codes ON pymts_master.doctype = document_control_codes.doctype GROUP BY doctypedescription HAVING (COUNT(*) > 25000) ORDER BY SUM(docamount) DESC;
+
+       doctypedescription       |  count  |       avg        |       sum
+--------------------------------+---------+------------------+------------------
+ MORTGAGE                       | 3081536 | 526426.755175916 | 1622202997437.77
+ AGREEMENT                      |  377039 |  2895239.8337725 | 1091618331685.75
+ DEED                           |  602528 | 1438329.81199558 | 866633984962.075
+ ASSIGNMENT OF LEASES AND RENTS |  101948 | 6656942.07000117 | 678661930152.479
+ BOTH RPTT AND RETT             |  209974 | 1046150.05747435 |  219664312168.12
+ NYC REAL PROPERTY TRANSFER TAX |   93245 | 1247465.21296263 | 116319893782.701
+ MORTGAGE AND CONSOLIDATION     |   51290 | 1956577.99953226 |  100352885596.01
+ TIMESHARE DEED                 |   35509 | 48702.3678385766 | 1729372379.58001
+(8 rows)
+```
+The first query returns the top eight document types ordered by average, while the second query is ordered by the sum. We can see that while mortgages are the most common transaction and also has the highest sum, it drops to seventh when we look at the average amounts per transactions. These basic queries can help us focus our further searches due to the large datasets involved.
