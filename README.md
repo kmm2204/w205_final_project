@@ -1,7 +1,5 @@
 <<<<<<< HEAD
 # w205_final_project
-# hw-kmm2204
-# hw-kmm2204
 =======
 # Diving into Donald's Data
 
@@ -88,7 +86,3 @@ This script takes those many parts from the previous step, and combines them int
 w205_final_project-master/cleanup.sh
 ```
 >>>>>>> 2b2e8618445b3db54100cce91e301ed92d9b736b
-# hw-kmm2204
-# hw-kmm2204
-# hw-kmm2204
-# hw-kmm2204
